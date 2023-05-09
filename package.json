@@ -12,9 +12,9 @@
     "@headlessui/react": "^1.7.13",
     "@heroicons/react": "^2.0.16",
     "@tailwindcss/line-clamp": "^0.4.2",
-    "@thirdweb-dev/chains": "^0.1.7-nightly-20230323214504-a6fce0f6",
-    "@thirdweb-dev/react": "^3.11.0-nightly-20230323214504-a6fce0f6",
-    "@thirdweb-dev/sdk": "^3.10.4-nightly-20230323214504-a6fce0f6",
+    "@thirdweb-dev/chains": "latest",
+    "@thirdweb-dev/react": "latest",
+    "@thirdweb-dev/sdk": "latest",
     "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

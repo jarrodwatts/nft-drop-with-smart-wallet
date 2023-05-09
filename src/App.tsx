@@ -10,16 +10,16 @@ import {
   useContractMetadata,
   useUnclaimedNFTSupply,
   Web3Button,
-} from '@thirdweb-dev/react';
-import { HeadingImage } from './components/HeadingImage';
-import { BigNumber, utils } from 'ethers';
-import { useMemo, useState } from 'react';
-import { Toast } from './components/Toast';
-import { parseIneligibility } from './utils/parseIneligibility';
-import { useToast } from './hooks/useToast';
+} from "@thirdweb-dev/react";
+import { HeadingImage } from "./components/HeadingImage";
+import { BigNumber, utils } from "ethers";
+import { useMemo, useState } from "react";
+import { Toast } from "./components/Toast";
+import { parseIneligibility } from "./utils/parseIneligibility";
+import { useToast } from "./hooks/useToast";
+import { nftDropContractAddress } from "./const/constants";
 
-const urlParams = new URL(window.location.toString()).searchParams;
-const contractAddress = urlParams.get('contractAddress') || '';
+const contractAddress = nftDropContractAddress;
 
 export default function Home() {
   const contractQuery = useContract(contractAddress);
@@ -33,15 +33,15 @@ export default function Home() {
 
   const activeClaimCondition = useActiveClaimConditionForWallet(
     contractQuery.contract,
-    address,
+    address
   );
-  const claimerProofs = useClaimerProofs(contractQuery.contract, address || '');
+  const claimerProofs = useClaimerProofs(contractQuery.contract, address || "");
   const claimIneligibilityReasons = useClaimIneligibilityReasons(
     contractQuery.contract,
     {
       quantity,
-      walletAddress: address || '',
-    },
+      walletAddress: address || "",
+    }
   );
   const unclaimedSupply = useUnclaimedNFTSupply(contractQuery.contract);
   const claimedSupply = useClaimedNFTSupply(contractQuery.contract);
@@ -58,11 +58,11 @@ export default function Home() {
 
   const priceToMint = useMemo(() => {
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0,
+      activeClaimCondition.data?.currencyMetadata.value || 0
     );
     return `${utils.formatUnits(
       bnPrice.mul(quantity).toString(),
-      activeClaimCondition.data?.currencyMetadata.decimals || 18,
+      activeClaimCondition.data?.currencyMetadata.decimals || 18
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
   }, [
     activeClaimCondition.data?.currencyMetadata.decimals,
@@ -75,7 +75,7 @@ export default function Home() {
     let bnMaxClaimable;
     try {
       bnMaxClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimableSupply || 0,
+        activeClaimCondition.data?.maxClaimableSupply || 0
       );
     } catch (e) {
       bnMaxClaimable = BigNumber.from(1_000_000);
@@ -84,7 +84,7 @@ export default function Home() {
     let perTransactionClaimable;
     try {
       perTransactionClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimablePerWallet || 0,
+        activeClaimCondition.data?.maxClaimablePerWallet || 0
       );
     } catch (e) {
       perTransactionClaimable = BigNumber.from(1_000_000);
@@ -97,7 +97,7 @@ export default function Home() {
     const snapshotClaimable = claimerProofs.data?.maxClaimable;
 
     if (snapshotClaimable) {
-      if (snapshotClaimable === '0') {
+      if (snapshotClaimable === "0") {
         // allowed unlimited for the snapshot
         bnMaxClaimable = BigNumber.from(1_000_000);
       } else {
@@ -134,7 +134,7 @@ export default function Home() {
       return (
         (activeClaimCondition.isSuccess &&
           BigNumber.from(activeClaimCondition.data?.availableSupply || 0).lte(
-            0,
+            0
           )) ||
         numberClaimed === numberTotal
       );
@@ -178,19 +178,19 @@ export default function Home() {
 
   const buttonLoading = useMemo(
     () => isLoading || claimIneligibilityReasons.isLoading,
-    [claimIneligibilityReasons.isLoading, isLoading],
+    [claimIneligibilityReasons.isLoading, isLoading]
   );
   const buttonText = useMemo(() => {
     if (isSoldOut) {
-      return 'Sold Out';
+      return "Sold Out";
     }
 
     if (canClaim) {
       const pricePerToken = BigNumber.from(
-        activeClaimCondition.data?.currencyMetadata.value || 0,
+        activeClaimCondition.data?.currencyMetadata.value || 0
       );
       if (pricePerToken.eq(0)) {
-        return 'Mint (Free)';
+        return "Mint (Free)";
       }
       return `Mint (${priceToMint})`;
     }
@@ -198,10 +198,10 @@ export default function Home() {
       return parseIneligibility(claimIneligibilityReasons.data, quantity);
     }
     if (buttonLoading) {
-      return 'Checking eligibility...';
+      return "Checking eligibility...";
     }
 
-    return 'Minting not available';
+    return "Minting not available";
   }, [
     isSoldOut,
     canClaim,
@@ -215,8 +215,8 @@ export default function Home() {
   const dropNotReady = useMemo(
     () =>
       claimConditions.data?.length === 0 ||
-      claimConditions.data?.every((cc) => cc.maxClaimableSupply === '0'),
-    [claimConditions.data],
+      claimConditions.data?.every((cc) => cc.maxClaimableSupply === "0"),
+    [claimConditions.data]
   );
 
   const dropStartingSoon = useMemo(
@@ -230,7 +230,7 @@ export default function Home() {
       activeClaimCondition.data,
       activeClaimCondition.isError,
       claimConditions.data,
-    ],
+    ]
   );
 
   if (!contractAddress) {
@@ -272,7 +272,7 @@ export default function Home() {
                 <p>
                   <span className="text-2xl font-bold tracking-wider text-gray-500">
                     {numberClaimed}
-                  </span>{' '}
+                  </span>{" "}
                   <span className="text-2xl font-bold tracking-wider">
                     / {numberTotal} minted
                   </span>
@@ -345,7 +345,7 @@ export default function Home() {
                           -
                         </button>
                         <p className="flex items-center justify-center w-full h-full font-mono text-center text-white lg:w-64">
-                          {!isLoading && isSoldOut ? 'Sold Out' : quantity}
+                          {!isLoading && isSoldOut ? "Sold Out" : quantity}
                         </p>
                         <button
                           onClick={() => {
@@ -368,7 +368,7 @@ export default function Home() {
                     {address ? (
                       <Web3Button
                         contractAddress={
-                          contractQuery.contract?.getAddress() || ''
+                          contractQuery.contract?.getAddress() || ""
                         }
                         action={(cntr) => cntr.erc721.claim(quantity)}
                         isDisabled={!canClaim || buttonLoading}
@@ -376,19 +376,19 @@ export default function Home() {
                           console.error(err);
                           console.log({ err });
                           showToast({
-                            title: 'Failed to mint drop',
-                            description: (err as any).reason || '',
-                            status: 'error',
+                            title: "Failed to mint drop",
+                            description: (err as any).reason || "",
+                            status: "error",
                             duration: 9000,
                             isClosable: true,
                           });
                         }}
                         onSuccess={() => {
                           showToast({
-                            title: 'Successfully minted',
+                            title: "Successfully minted",
                             description:
-                              'The NFT has been transferred to your wallet',
-                            status: 'success',
+                              "The NFT has been transferred to your wallet",
+                            status: "success",
                             duration: 5000,
                             isClosable: true,
                           });
