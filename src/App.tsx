@@ -415,7 +415,7 @@ export default function Home() {
                             <span className="sr-only">Loading...</span>
                           </div>
                         ) : (
-                          buttonText
+                          <span>{buttonText}</span>
                         )}
                       </Web3Button>
                     ) : (
@@ -426,6 +426,15 @@ export default function Home() {
                 </div>
               )}
             </div>
+            {address && (
+              <>
+                <hr className="w-full h-px my-4 border border-gray-800" />
+                <div className="flex flex-col w-full gap-4">
+                  <span>Your wallet information:</span>
+                  <ConnectWallet />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
